@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_files: {
+        Row: {
+          created_at: string
+          file_size: number | null
+          file_type: string
+          filename: string
+          id: string
+          is_image: boolean
+          project_id: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_size?: number | null
+          file_type: string
+          filename: string
+          id?: string
+          is_image?: boolean
+          project_id: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_size?: number | null
+          file_type?: string
+          filename?: string
+          id?: string
+          is_image?: boolean
+          project_id?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          assigned_date: string | null
+          benefit: number
+          blockers: string | null
+          color_index: number
+          complexity_factors: string | null
+          created_at: string
+          discovery_scope: string | null
+          effort: number
+          id: string
+          needs_dependencies: string | null
+          next_steps: string | null
+          research_focus: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_date?: string | null
+          benefit?: number
+          blockers?: string | null
+          color_index?: number
+          complexity_factors?: string | null
+          created_at?: string
+          discovery_scope?: string | null
+          effort?: number
+          id?: string
+          needs_dependencies?: string | null
+          next_steps?: string | null
+          research_focus?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_date?: string | null
+          benefit?: number
+          blockers?: string | null
+          color_index?: number
+          complexity_factors?: string | null
+          created_at?: string
+          discovery_scope?: string | null
+          effort?: number
+          id?: string
+          needs_dependencies?: string | null
+          next_steps?: string | null
+          research_focus?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
