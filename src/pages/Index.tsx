@@ -3,24 +3,45 @@ import { useProjects } from '@/hooks/useProjects';
 import { Project } from '@/types/project';
 import Header from '@/components/dashboard/Header';
 import PrioritizationMatrix from '@/components/dashboard/PrioritizationMatrix';
+import ProjectFormDialog from '@/components/dashboard/ProjectFormDialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
 const Index = () => {
-  const { projects, loading, createProject } = useProjects();
+  const { projects, loading, createProject, updateProject, deleteProject } = useProjects();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
 
-  const handleCreateProject = async () => {
-    await createProject({
-      title: 'New Project',
-      effort: 5,
-      benefit: 5,
-    });
+  const handleCreateProject = () => {
+    setSelectedProject(null);
+    setFormMode('create');
+    setIsFormOpen(true);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setSelectedProject(project);
+    setFormMode('edit');
+    setIsFormOpen(true);
   };
 
   const handleProjectClick = (project: Project) => {
-    setSelectedProject(project);
-    // TODO: Open project card modal
+    handleEditProject(project);
+  };
+
+  const handleSaveProject = async (projectData: Partial<Project>) => {
+    if (formMode === 'create') {
+      const result = await createProject(projectData as typeof projectData & { title: string });
+      return !!result;
+    } else if (selectedProject) {
+      const result = await updateProject(selectedProject.id, projectData);
+      return !!result;
+    }
+    return false;
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    return await deleteProject(projectId);
   };
 
   if (loading) {
@@ -57,6 +78,16 @@ const Index = () => {
         <PrioritizationMatrix 
           projects={projects} 
           onProjectClick={handleProjectClick}
+        />
+
+        {/* Project Form Dialog */}
+        <ProjectFormDialog
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          project={selectedProject}
+          onSave={handleSaveProject}
+          onDelete={formMode === 'edit' ? handleDeleteProject : undefined}
+          mode={formMode}
         />
 
         {/* Timeline Section - TODO */}
